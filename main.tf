@@ -109,33 +109,33 @@ resource "azurerm_network_security_group" "NSG_Allow_Web" {
     Type      = "NSG"
     ManagedBy = "Terraform"
   }
-  
+
 }
 
 resource "azurerm_network_security_rule" "Allow_FTP" {
-  name = "Allow_FTP"
-  resource_group_name = azurerm_resource_group.rg.name
+  name                        = "Allow_FTP"
+  resource_group_name         = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.NSG_Allow_Web.name
-  priority = 101
-  direction = "Inbound"
-  access = "Allow"
-  protocol = "Tcp"
-  source_port_range = "*"
-  destination_port_range = "21"
-  source_address_prefix = "*"
-  destination_address_prefix = azurerm_network_interface.name.private_ip_address
+  priority                    = 101
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "21"
+  source_address_prefix       = "*"
+  destination_address_prefix  = azurerm_network_interface.name.private_ip_address
 }
 
 resource "azurerm_network_interface_security_group_association" "VM01_NIC_NSG_Allow_Web" {
-  network_interface_id = azurerm_network_interface.name.id
+  network_interface_id      = azurerm_network_interface.name.id
   network_security_group_id = azurerm_network_security_group.NSG_Allow_Web.id
 }
 
 resource "azurerm_storage_account" "SA" {
-  name = "sadkmh2122220002"
-  location = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  account_tier = "Standard"
+  name                     = "sadkmh2122220002"
+  location                 = azurerm_resource_group.rg.location
+  resource_group_name      = azurerm_resource_group.rg.name
+  account_tier             = "Standard"
   account_replication_type = "LRS"
 }
 
@@ -164,7 +164,7 @@ resource "azurerm_linux_virtual_machine" "VM02" {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
-  
+
   boot_diagnostics {
     storage_account_uri = azurerm_storage_account.SA.primary_blob_endpoint
   }
@@ -181,22 +181,22 @@ resource "azurerm_linux_virtual_machine" "VM02" {
 }
 
 resource "azurerm_managed_disk" "VM02_Data" {
-  name = "VM02_Data_Disk"
-  location = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  name                 = "VM02_Data_Disk"
+  location             = azurerm_resource_group.rg.location
+  resource_group_name  = azurerm_resource_group.rg.name
   storage_account_type = "Premium_LRS"
-  disk_size_gb = 25
-  create_option = "Empty"
+  disk_size_gb         = 25
+  create_option        = "Empty"
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "VM02_attach" {
-  managed_disk_id = azurerm_managed_disk.VM02_Data.id
+  managed_disk_id    = azurerm_managed_disk.VM02_Data.id
   virtual_machine_id = azurerm_linux_virtual_machine.VM02.id
-  lun = 0
-  caching = "ReadWrite"
+  lun                = 0
+  caching            = "ReadWrite"
 }
 
 resource "azurerm_network_interface_security_group_association" "VM02_NIC_NSG_Allow_Web" {
-  network_interface_id = azurerm_network_interface.VM02_NIC.id
+  network_interface_id      = azurerm_network_interface.VM02_NIC.id
   network_security_group_id = azurerm_network_security_group.NSG_Allow_Web.id
 }
