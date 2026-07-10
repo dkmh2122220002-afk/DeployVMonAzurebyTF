@@ -33,4 +33,5 @@ variable "ENV" {
 
 variable "New" {
   type = string
+  default = "value"
 }
