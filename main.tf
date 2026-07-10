@@ -80,5 +80,8 @@ resource "azurerm_linux_virtual_machine" "VM01" {
   sku       = "ubuntu-pro-gen1"
   version   = "latest"
   }
+  tags = {
+    ManagedBy = "Hien"
+  }
 }
 
