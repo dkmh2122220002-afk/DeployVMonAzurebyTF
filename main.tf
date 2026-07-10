@@ -97,7 +97,7 @@ resource "azurerm_network_security_group" "NSG_Allow_Web" {
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "*"
+    destination_port_range     = "80"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
@@ -106,3 +106,24 @@ resource "azurerm_network_security_group" "NSG_Allow_Web" {
     ManagedBy = "Terraform"
   }
 }
+
+resource "azurerm_network_security_rule" "Allow_FTP" {
+  name = "Allow_FTP"
+  resource_group_name = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.NSG_Allow_Web.name
+  priority = 101
+  direction = "Inbound"
+  access = "Allow"
+  protocol = "Tcp"
+  source_port_range = "*"
+  destination_port_range = "21"
+  source_address_prefix = "*"
+  destination_address_prefix = azurerm_network_interface.name.private_ip_address
+}
+
+resource "azurerm_network_interface_security_group_association" "VM01_NIC_NSG_Allow_Web" {
+  network_interface_id = azurerm_network_interface.name.id
+  network_security_group_id = azurerm_network_security_group.NSG_Allow_Web.id
+}
+
+
