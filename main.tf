@@ -164,6 +164,7 @@ resource "azurerm_linux_virtual_machine" "VM02" {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
+  
   boot_diagnostics {
     storage_account_uri = azurerm_storage_account.SA.primary_blob_endpoint
   }
@@ -177,6 +178,22 @@ resource "azurerm_linux_virtual_machine" "VM02" {
     ManagedBy = "Hien"
   }
   custom_data = base64encode(file("./init_script"))
+}
+
+resource "azurerm_managed_disk" "VM02_Data" {
+  name = "VM02_Data_Disk"
+  location = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  storage_account_type = "Premium_LRS"
+  disk_size_gb = 25
+  create_option = "Empty"
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "VM02_attach" {
+  managed_disk_id = azurerm_managed_disk.VM02_Data.id
+  virtual_machine_id = azurerm_linux_virtual_machine.VM02.id
+  lun = 0
+  caching = "ReadWrite"
 }
 
 resource "azurerm_network_interface_security_group_association" "VM02_NIC_NSG_Allow_Web" {
