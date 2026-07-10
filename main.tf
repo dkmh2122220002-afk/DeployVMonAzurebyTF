@@ -76,7 +76,7 @@ resource "azurerm_linux_virtual_machine" "VM01" {
     storage_account_type = "Standard_LRS"
   }
   boot_diagnostics {
-    storage_account_uri = azurerm_storage_account.SA.primary_web_endpoint
+    storage_account_uri = azurerm_storage_account.SA.primary_blob_endpoint
   }
   source_image_reference {
     publisher = "canonical"
