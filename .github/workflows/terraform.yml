@@ -65,15 +65,15 @@ jobs:
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
+      uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: 1.15.8
     - name: Azure Login
-      uses: azure/login@v1
+      uses: azure/login@v2
       with: 
         creds: ${{secrets.AZURE_CREDENTIALS}}
 
