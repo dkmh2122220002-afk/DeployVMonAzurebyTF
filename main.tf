@@ -69,6 +69,7 @@ resource "azurerm_linux_virtual_machine" "VM01" {
   size = "Standard_D2_v3"
   admin_username = "hien"
   admin_password = "xinchao1A"
+  disable_password_authentication = "False"
   network_interface_ids = [azurerm_network_interface.name.id]
   os_disk {
     caching = "ReadWrite"
