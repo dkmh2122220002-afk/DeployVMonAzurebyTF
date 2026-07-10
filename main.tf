@@ -75,6 +75,9 @@ resource "azurerm_linux_virtual_machine" "VM01" {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
+  boot_diagnostics {
+    storage_account_uri = azurerm_storage_account.SA.primary_web_endpoint
+  }
   source_image_reference {
     publisher = "canonical"
     offer     = "ubuntu-24_04-lts"
@@ -105,6 +108,7 @@ resource "azurerm_network_security_group" "NSG_Allow_Web" {
     Type      = "NSG"
     ManagedBy = "Terraform"
   }
+  
 }
 
 resource "azurerm_network_security_rule" "Allow_FTP" {
@@ -126,4 +130,10 @@ resource "azurerm_network_interface_security_group_association" "VM01_NIC_NSG_Al
   network_security_group_id = azurerm_network_security_group.NSG_Allow_Web.id
 }
 
-
+resource "azurerm_storage_account" "SA" {
+  name = "storageaccount"
+  location = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  account_tier = "Standard"
+  account_replication_type = "LRS"
+}

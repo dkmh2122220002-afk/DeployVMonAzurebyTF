@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# Logging
+exec > >(tee /var/log/init-script.log)
+exec 2>&1
+
+echo "Starting initialization..."
+
+# Update OS
+apt-get update -y
+apt-get upgrade -y
+
+# Install unattended upgrades
+apt-get install -y unattended-upgrades
+
+cat > /etc/apt/apt.conf.d/20auto-upgrades <<EOF
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+EOF
+
+# Install nginx
+apt-get install -y nginx
+
+# Create custom web page
+cat > /var/www/html/index.html <<EOF
+<!DOCTYPE html>
+<html>
+<head>
+<title>WEB01</title>
+<style>
+body {
+    background-color: purple;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 150px;
+}
+
+h1 {
+    font-size: 72px;
+}
+
+p {
+    font-size: 24px;
+}
+</style>
+</head>
+<body>
+<h1>WEB01</h1>
+<p>Provisioned by Terraform</p>
+<p>Hostname: $(hostname)</p>
+<p>Deployment: $(date)</p>
+</body>
+</html>
+EOF
+
+# Enable and start nginx
+systemctl enable nginx
+systemctl restart nginx
+
+# Open firewall if UFW exists
+if command -v ufw >/dev/null 2>&1; then
+    ufw allow 80/tcp
+fi
+
+echo "Initialization completed."
