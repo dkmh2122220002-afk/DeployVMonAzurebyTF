@@ -30,3 +30,7 @@ variable "ENV" {
     STG  = "STG"
   }
 }
+
+variable "New" {
+  type = string
+}
