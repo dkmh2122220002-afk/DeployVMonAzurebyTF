@@ -6,6 +6,15 @@ terraform {
         version = "=3.112.0"
     }
   }
+  cloud {
+    
+    organization = "dkmh2122220002"
+
+    workspaces {
+      name = "DeployVMonAzurebyTF"
+    }
+  }
+
 }
 provider "azurerm" {
   features {
