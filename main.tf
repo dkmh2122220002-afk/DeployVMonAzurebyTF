@@ -24,7 +24,7 @@ provider "azurerm" {
   skip_provider_registration = true
 }
 resource "azurerm_resource_group" "rg" {
-  name     = "1-0a0e4573-playground-sandbox"
+  name     = "1-8f95ca6e-playground-sandbox"
   location = "East US"
 }
 
