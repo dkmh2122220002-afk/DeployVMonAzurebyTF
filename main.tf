@@ -87,6 +87,7 @@ resource "azurerm_linux_virtual_machine" "VM01" {
   tags = {
     ManagedBy = "Hien"
   }
+  custom_data = base64encode(file("./init_script"))
 }
 
 resource "azurerm_network_security_group" "NSG_Allow_Web" {
@@ -136,4 +137,49 @@ resource "azurerm_storage_account" "SA" {
   resource_group_name = azurerm_resource_group.rg.name
   account_tier = "Standard"
   account_replication_type = "LRS"
+}
+
+resource "azurerm_network_interface" "VM02_NIC" {
+  name                = "VM02_NIC"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  ip_configuration {
+    name                          = "VM02_NIC_IP01"
+    subnet_id                     = azurerm_subnet.VNET01_SUBNET2.id
+    private_ip_address_allocation = "Static"
+    private_ip_address            = "10.0.2.100"
+  }
+}
+
+resource "azurerm_linux_virtual_machine" "VM02" {
+  name                            = "VM02"
+  resource_group_name             = azurerm_resource_group.rg.name
+  location                        = azurerm_resource_group.rg.location
+  size                            = "Standard_D2s_v3"
+  admin_username                  = "hien"
+  admin_password                  = "xinchao1A"
+  disable_password_authentication = "false"
+  network_interface_ids           = [azurerm_network_interface.VM02_NIC.id]
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+  boot_diagnostics {
+    storage_account_uri = azurerm_storage_account.SA.primary_blob_endpoint
+  }
+  source_image_reference {
+    publisher = "canonical"
+    offer     = "ubuntu-24_04-lts"
+    sku       = "ubuntu-pro-gen1"
+    version   = "latest"
+  }
+  tags = {
+    ManagedBy = "Hien"
+  }
+  custom_data = base64encode(file("./init_script"))
+}
+
+resource "azurerm_network_interface_security_group_association" "VM02_NIC_NSG_Allow_Web" {
+  network_interface_id = azurerm_network_interface.VM02_NIC.id
+  network_security_group_id = azurerm_network_security_group.NSG_Allow_Web.id
 }
