@@ -73,10 +73,10 @@ jobs:
       with:
         terraform_version: 1.15.8
         cli_config_credentials_token: ${{secrets.TFC_TOKEN}}
-    - name: Azure Login
-      uses: azure/login@v2
-      with: 
-        creds: ${{secrets.AZURE_CREDENTIALS}}
+    #- name: Azure Login
+     # uses: azure/login@v2
+     # with: 
+     #   creds: ${{secrets.AZURE_CREDENTIALS}}
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
