@@ -131,7 +131,7 @@ resource "azurerm_network_interface_security_group_association" "VM01_NIC_NSG_Al
 }
 
 resource "azurerm_storage_account" "SA" {
-  name = "storageaccount"
+  name = "storageaccount_dkmh2122220002"
   location = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   account_tier = "Standard"
